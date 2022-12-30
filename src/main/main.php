@@ -20,7 +20,7 @@
             <div id="searchBar" class="container">
                 <form action="main.php" class="input-group input-group-lg">
                     <input type="text" placeholder="Search globally across all fields and records" name="search" class="form-control">
-                    <button type="submit" class="btn btn-outline-primary" type="button">Go</button>
+                    <button type="submit" class="btn btn-outline-primary" type="button">Search</button>
                 </form>
             </div>
         </div>
@@ -29,43 +29,23 @@
                 <?php
                 require_once("../common/php/DBConnector.php");
 
-                $connMySQL = new ConnectionMySQL();
-                $pdo = $connMySQL->getConnection();
-                $table = $_SESSION['table_name'];
-                $maxReads = $_SESSION['rowsPerPage'];
-                $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 0;
-                //echo "SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : "") . "LIMIT $maxReads OFFSET " . ($page != 0 ? (($page * $maxReads) - 1) : 0);
-                $stmt = $pdo->prepare("SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : "") . "LIMIT $maxReads OFFSET " . ($page != 0 ? ($page * $maxReads) : 0));
-                $stmt->execute();
-                $stmtResponse = $stmt->fetchAll();
-                $stmt = $pdo->prepare("SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : ""));
-                $stmt->execute();
-                $maxPages = ceil(count($stmt->fetchAll()) / $maxReads);
-                if ($maxPages > 0) {
-                    echo "  <table class=\"table table-dark table-hover\">
-                        <thead>
-                        <tr class=\"table-primary\"><th scope=\"col\">id</th>     
-                        <th scope=\"col\">" . $configInfo[$table . 'MAINFIELD'] . "</th>
-                        <th scope=\"col\"></th>
-                    </tr> </thead>";
-                    foreach ($stmtResponse as $currentRecord) {
-                        echo    "<tr>   <td><p class=\"fw-bold\">" . $currentRecord['id'] . "</p></td>
-                    <td>" . $currentRecord[$configInfo[$table . 'MAINFIELD']] . "</td>
-                    <td><a class=\"btn btn-primary\" href=\"../details/details.php?id=" . $currentRecord['id'] . "\" role=\"button\">Details</a></td>
-                    </tr>";
+                if (is_array($_SESSION['table_name'])) { //multiple table functionality
+                    $tableIndex = 0;
+                    foreach ($_SESSION['table_name'] as $table) {
+                        //echo $table;
+                        $currentConfig = array();
+                        foreach (array_keys($configInfo) as $configKey) {
+                            $currentConfig += [$configKey => is_array($configInfo[$configKey]) ? $configInfo[$configKey][$tableIndex] : $configInfo[$configKey]];
+                        }
+                        showTable($currentConfig, $_SESSION["table_name"][$tableIndex]);
+                        echo "<br></br>";
+                        $tableIndex++;
                     }
-                    echo "</table>
-                          </div>";
                 } else {
-                    echo "Non sono stati trovati dati. Prova con un filtro diverso se ne stai usando uno.";
+                    showTable($configInfo, $_SESSION["table_name"]);
                 }
-
                 ?>
 
-                <div id="pageWrapper">
-                    <a class="btn btn-dark" role="button" href="main.php?<?php echo isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "" ?>page=<?php echo ($page - 1) ?>" id="previousPage" class="pageButton" style="visibility:  <?php echo ($page <= 0 ? 'hidden;' : 'visible;') ?>">Previous</a>
-                    <a class="btn btn-dark" role="button" href="main.php?<?php echo isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "" ?>page=<?php echo ($page + 1) ?>" id="nextPage" class="pageButton" style="visibility:  <?php echo ($page >= ($maxPages - 1) ? 'hidden;' : 'visible;') ?>">Next</a>
-                </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -73,6 +53,45 @@
 </body>
 
 <?php
+
+function showTable($configInfo, $table)
+{
+    $connMySQL = new ConnectionMySQL();
+    $pdo = $connMySQL->getConnection();
+    $maxReads = $_SESSION['rowsPerPage'];
+    $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 0;
+    //echo "SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : "") . "LIMIT $maxReads OFFSET " . ($page != 0 ? (($page * $maxReads) - 1) : 0);
+    $stmt = $pdo->prepare("SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : "") . "LIMIT $maxReads OFFSET " . ($page != 0 ? ($page * $maxReads) : 0));
+    $stmt->execute();
+    $stmtResponse = $stmt->fetchAll();
+    $stmt = $pdo->prepare("SELECT * FROM $table " . (isset($_REQUEST['search']) ? "WHERE" . generateFilter($_REQUEST['search'], $table, $configInfo) : ""));
+    $stmt->execute();
+    $maxPages = ceil(count($stmt->fetchAll()) / $maxReads);
+    if ($maxPages > 0) {
+        echo "  <table class=\"table table-dark table-hover\">
+                        <thead>
+                        <tr class=\"table-primary\"><th scope=\"col\">id</th>     
+                        <th scope=\"col\">" . $configInfo[$table . 'MAINFIELD'] . "</th>
+                        <th scope=\"col\"></th>
+                    </tr> </thead>";
+        foreach ($stmtResponse as $currentRecord) {
+            echo    "<tr>   <td><p class=\"fw-bold\">" . $currentRecord['id'] . "</p></td>
+                    <td>" . $currentRecord[$configInfo[$table . 'MAINFIELD']] . "</td>
+                    <td><a class=\"btn btn-primary\" href=\"../details/details.php?id=" . $currentRecord['id'] . "&table=" . $table . "\" role=\"button\">Details</a></td>
+                    </tr>";
+        }
+        echo "</table>
+                          </div>";
+    } else {
+        echo "<p style=\"color: white;\">Non sono stati trovati dati in " . $table . ". Prova con un filtro diverso se ne stai usando uno.</p>";
+    }
+    echo "
+                <div id=\"pageWrapper\">
+                    <a class=\"btn btn-dark\" role=\"button\" href=\"main.php?" . (isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "") . "page=" . ($page - 1) . "\" id=\"previousPage\" class=\"pageButton\" style=\"visibility:" . ($page <= 0 ? 'hidden;' : 'visible;') . "\">Previous</a>
+                    <a class=\"btn btn-dark\" role=\"button\" href=\"main.php?" . (isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "") . "page=" . ($page + 1) . "\" id=\"nextPage\" class=\"pageButton\" style=\"visibility:" . ($page >= ($maxPages - 1) ? 'hidden;' : 'visible;') . "\">Next</a>
+                </div>";
+}
+
 function generateFilter($searchTerm, $tableName, $configInfo)
 {
     $filter = "";
@@ -92,7 +111,7 @@ function generateFilter($searchTerm, $tableName, $configInfo)
 
                 $connMySQL = new ConnectionMySQL();
                 $foreignPdo = $connMySQL->getConnection();
-                $foreignStmt = $foreignPdo->prepare("SELECT id FROM " . strtolower(str_replace("id", '', $currentColumn["COLUMN_NAME"])) . " WHERE " . $configInfo['t' . strtolower(str_replace("id", '', $currentColumn["COLUMN_NAME"])) . 'MAINFIELD'] . " LIKE '%" . $searchTerm . "%'");
+                $foreignStmt = $foreignPdo->prepare("SELECT id FROM t" . strtolower(str_replace("id", '', $currentColumn["COLUMN_NAME"])) . " WHERE " . $configInfo['t' . strtolower(str_replace("id", '', $currentColumn["COLUMN_NAME"])) . 'MAINFIELD'] . " LIKE '%" . $searchTerm . "%'");
                 $foreignStmt->execute();
                 $foreignStmtResponse = $foreignStmt->fetchAll();
                 if (isset($foreignStmtResponse[0]['id'])) {

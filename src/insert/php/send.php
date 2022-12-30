@@ -5,7 +5,7 @@ require_once("../../common/php/DBConnector.php");
 if (isset($_REQUEST)) {
     //echo var_dump($_REQUEST);
 
-    $table = $_SESSION['table_name'];
+    $table = $_REQUEST['table'];
 
     $connMySQLRows = new ConnectionMySQL();
     $pdoRows = $connMySQLRows->getConnection();
@@ -45,4 +45,4 @@ if (isset($_REQUEST)) {
     echo "no data";
 };
 
-header("location: ../insert.php");
+header("location: ../insert.php?table=" . $_REQUEST["table"]);

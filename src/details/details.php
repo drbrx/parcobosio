@@ -10,7 +10,7 @@
 <?php
 require_once("../common/php/DBConnector.php");
 
-$table = $_SESSION['table_name'];
+$table = $_REQUEST['table'];
 
 $connMySQL = new ConnectionMySQL();
 $pdo = $connMySQL->getConnection();
@@ -41,11 +41,11 @@ $stmtResponseRows = $stmtRows->fetchAll();
                     <table class="table table-dark table-striped-columns">
                         <?php
                         foreach ($stmtResponseRows as $currentRecordRows) {
-
                             if ($currentRecordRows["TABLE_SCHEMA"] == $_SESSION['db_name']) {
                                 if ($currentRecordRows["EXTRA"] != "auto_increment") {
                                     echo "<td class=\"fw-bold\">" . $currentRecordRows["COLUMN_NAME"] . "</td><td>";
-                                    $maxLenght = preg_replace("/[^0-9]/", "", $currentRecordRows["COLUMN_TYPE"]);
+                                    $maxLenght = isset($configInfo[$currentRecordRows["COLUMN_NAME"] . "Length"]) ? intval($configInfo[$currentRecordRows["COLUMN_NAME"] . "Length"]) : preg_replace("/[^0-9]/", "", $currentRecordRows["COLUMN_TYPE"]);
+                                    //echo $currentRecord["COLUMN_NAME"] . "Length" . " - " . isset($configInfo[$currentRecord["COLUMN_NAME"] . "Lenght"]) . " - " . $maxLenght;
                                     $dataType = strtok($currentRecordRows["COLUMN_TYPE"], '(');
                                     //echo $currentRecordRows["IS_NULLABLE"];
 
@@ -79,6 +79,30 @@ $stmtResponseRows = $stmtRows->fetchAll();
                                             for ($i = 0; $i < count($foreignTable); $i++) {
                                                 echo "<input class=\"form-check-input\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . $i . "\" value=\"" . $foreignTable[$i]['id'] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "checked=\"checked\"" : "") . ">" . $foreignTable[$i][$configInfo['t' . strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])) . 'MAINFIELD']] . "</input>";
                                             }
+
+                                            break;
+                                        case "sex":
+                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "M" . "\" value=\"m\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "m" ? " checked=\"checked\"" : "") . ">M</input>";
+                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "F" . "\" value=\"f\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "f" ? " checked=\"checked\"" : "") . ">F</input>";
+
+
+                                            break;
+                                        case "day":
+                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                            for ($i = 1; $i <= 31; $i++) {
+                                                echo "<option value=\"" . $i . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . $i .  "</option>";
+                                            }
+
+                                            break;
+                                        case "month":
+                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                            for ($i = 1; $i <= 12; $i++) {
+                                                echo "<option value=\"" . $i . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . DateTime::createFromFormat('!m', $i)->format('F') .  "</option>";
+                                            }
+
+                                            break;
+                                        case "year":
+                                            echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"4\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"Numero di max 4 cifre\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']]  . "\"></input>";
 
                                             break;
                                     }
@@ -132,7 +156,7 @@ function getForeignValues($tableName, $configInfo)
 {
     $connMySQL = new ConnectionMySQL();
     $pdo = $connMySQL->getConnection();
-    $foreignTableStmt = $pdo->prepare("SELECT id, " . $configInfo['t' . $tableName . 'MAINFIELD'] . " FROM " . $tableName);
+    $foreignTableStmt = $pdo->prepare("SELECT id, " . $configInfo['t' . $tableName . 'MAINFIELD'] . " FROM t" . $tableName);
     $foreignTableStmt->execute();
     $foreignTableStmtResponse = $foreignTableStmt->fetchAll();
 
