@@ -49,60 +49,63 @@ $stmtResponseRows = $stmtRows->fetchAll();
                                     $dataType = strtok($currentRecordRows["COLUMN_TYPE"], '(');
                                     //echo $currentRecordRows["IS_NULLABLE"];
 
+                                    $readonly = (isset($configInfo[$_REQUEST["table"] . "PERMISSIONS"]) && $configInfo[$_REQUEST["table"] . "PERMISSIONS"] == "read" ? "readonly" : "");
+                                    $disabled = ($readonly != "" ? "disabled" : "");
+
                                     switch (isset($configInfo[$currentRecordRows["COLUMN_NAME"]]) ? $configInfo[$currentRecordRows["COLUMN_NAME"]] : $dataType) {
                                         case "int":
-                                            echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"" . $maxLenght . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"numero di max " . $maxLenght . " cifre\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\"></input>";
+                                            echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"" . $maxLenght . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"numero di max " . $maxLenght . " cifre\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\" $readonly></input>";
                                             break;
                                         case "varchar":
                                             echo ($maxLenght > 20 ? "<textarea class=\"form-control\"" : "<input class=\"form-control\" type=\"text\" value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\"") .
-                                                " \" maxlength=\"" . $maxLenght . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"testo di max " . $maxLenght . " caratteri\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . ($maxLenght > 20 ? $currentRecord[$currentRecordRows['COLUMN_NAME']] . "</textarea>" : "</input>");
+                                                " \" maxlength=\"" . $maxLenght . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"testo di max " . $maxLenght . " caratteri\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " $readonly>" . ($maxLenght > 20 ? $currentRecord[$currentRecordRows['COLUMN_NAME']] . "</textarea>" : "</input>");
                                             break;
                                         case "date":
-                                            echo "<input type=\"date\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\"></input>";
+                                            echo "<input type=\"date\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\" $disabled></input>";
                                             break;
                                         case "customText":
-                                            echo "<input class=\"form-control\" type=\"text\" maxlength=\"" . $configInfo[$currentRecordRows["COLUMN_NAME"] . 'Length'] . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"stringa di max " . $configInfo[$currentRecordRows["COLUMN_NAME"] . 'Length'] . " caratteri\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\"></input>";
+                                            echo "<input class=\"form-control\" type=\"text\" maxlength=\"" . $configInfo[$currentRecordRows["COLUMN_NAME"] . 'Length'] . "\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"stringa di max " . $configInfo[$currentRecordRows["COLUMN_NAME"] . 'Length'] . " caratteri\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']] . "\" $readonly></input>";
                                             break;
                                         case "checkbox":
-                                            echo "<input class=\"form-check-input\" type=\"checkbox\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\"" . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == 's' ? "checked" : "") . "></input>";
+                                            echo "<input class=\"form-check-input\" type=\"checkbox\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\"" . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == 's' ? "checked" : "") . " $disabled></input>";
                                             break;
                                         case "select":
                                             $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])), $configInfo);
-                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
-                                            for ($i = 0; $i < count($foreignTable); $i++) {
-                                                echo "<option value=\"" . $foreignTable[$i]['id'] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . $foreignTable[$i][$configInfo['t' . strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
+                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " $disabled>";
+                                            for ($i = 1; $i <= count($foreignTable); $i++) {
+                                                echo "<option value=\"" . $foreignTable[$i - 1]['id'] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . $foreignTable[$i - 1][$configInfo['t' . strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
                                             }
                                             echo "</select>";
                                             break;
                                         case "radio":
                                             $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])), $configInfo);
-                                            for ($i = 0; $i < count($foreignTable); $i++) {
-                                                echo "<input class=\"form-check-input\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . $i . "\" value=\"" . $foreignTable[$i]['id'] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "checked=\"checked\"" : "") . ">" . $foreignTable[$i][$configInfo['t' . strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])) . 'MAINFIELD']] . "</input>";
+                                            for ($i = 1; $i <= count($foreignTable); $i++) {
+                                                echo "<input class=\"form-check-input\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . $i . "\" value=\"" . $foreignTable[$i]['id'] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " " . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "checked=\"checked\"" : "") . " $disabled>" . $foreignTable[$i][$configInfo['t' . strtolower(str_replace("id", '', $currentRecordRows["COLUMN_NAME"])) . 'MAINFIELD']] . "</input>";
                                             }
 
                                             break;
                                         case "sex":
-                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "M" . "\" value=\"m\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "m" ? " checked=\"checked\"" : "") . ">M</input>";
-                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "F" . "\" value=\"f\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "f" ? " checked=\"checked\"" : "") . ">F</input>";
+                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "M" . "\" value=\"m\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "m" ? " checked=\"checked\"" : "") . " $disabled>M</input>";
+                                            echo "<input class=\"form-check-input m-1\" type=\"radio\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "F" . "\" value=\"f\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == "f" ? " checked=\"checked\"" : "") . " $disabled>F</input>";
 
 
                                             break;
                                         case "day":
-                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " $disabled>";
                                             for ($i = 1; $i <= 31; $i++) {
                                                 echo "<option value=\"" . $i . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . $i .  "</option>";
                                             }
 
                                             break;
                                         case "month":
-                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                            echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . " $disabled>";
                                             for ($i = 1; $i <= 12; $i++) {
                                                 echo "<option value=\"" . $i . "\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . ($currentRecord[$currentRecordRows['COLUMN_NAME']] == $i ? "selected=\"selected\"" : "") . ">" . DateTime::createFromFormat('!m', $i)->format('F') .  "</option>";
                                             }
 
                                             break;
                                         case "year":
-                                            echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"4\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"Numero di max 4 cifre\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']]  . "\"></input>";
+                                            echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"4\" name=\"" . $currentRecordRows["COLUMN_NAME"] . "\" id=\"" . $currentRecordRows["COLUMN_NAME"] . "\" placeholder=\"Numero di max 4 cifre\" " . ($currentRecordRows["IS_NULLABLE"] != "NO" ? "" : "required") . "value=\"" . $currentRecord[$currentRecordRows['COLUMN_NAME']]  . "\" $readonly></input>";
 
                                             break;
                                     }
@@ -113,15 +116,17 @@ $stmtResponseRows = $stmtRows->fetchAll();
                                 echo "</td></tr>";
                             }
                         }
+                        if (isset($configInfo[$_REQUEST["table"] . "PERMISSIONS"]) && $configInfo[$_REQUEST["table"] . "PERMISSIONS"] == "write") {
                         ?>
-                        <tr>
-                            <td><input class="btn btn-success" type="submit" name="submit" value="save changes" /></td>
-                            <td><input class="btn btn-warning" type="button" name="cancel" value="cancel changes" onclick="location.reload();" /></td>
-                        </tr>
-                        <tr>
-                            <td><input class="btn btn-danger" type="button" name="delete" value="delete element" onclick="deleteElement(<?php echo $_REQUEST['id']; ?>)" /></td>
-                            <td><input type="hidden" name="id" value="<?php echo $_REQUEST['id'] ?>"></td>
-                        </tr>
+                            <tr>
+                                <td><input class="btn btn-success" type="submit" name="submit" value="save changes" /></td>
+                                <td><input class="btn btn-warning" type="button" name="cancel" value="cancel changes" onclick="location.reload();" /></td>
+                            </tr>
+                            <tr>
+                                <td><input class="btn btn-danger" type="button" name="delete" value="delete element" onclick="deleteElement(<?php echo $_REQUEST['id']; ?>)" /></td>
+                                <td><input type="hidden" name="id" value="<?php echo $_REQUEST['id'] ?>"></td>
+                            </tr>
+                        <?php } ?>
                     </table>
                 </div>
             </form>

@@ -24,9 +24,9 @@ if (isset($_REQUEST)) {
                 }
                 $fieldList .= $currentRecordRows["COLUMN_NAME"];
                 if (isset($configInfo[$currentRecordRows["COLUMN_NAME"]]) && ($configInfo[$currentRecordRows["COLUMN_NAME"]] == "radio" || $configInfo[$currentRecordRows["COLUMN_NAME"]] == "select")) {
-                    $values .= "'" . $_REQUEST[$currentRecordRows["COLUMN_NAME"]] - 1 . "'";
+                    $values .= "'" . $_REQUEST[$currentRecordRows["COLUMN_NAME"]] . "'";
                 } else if (isset($configInfo[$currentRecordRows["COLUMN_NAME"]]) && $configInfo[$currentRecordRows["COLUMN_NAME"]] == "checkbox") {
-                    $values .= "'" . (isset($_REQUEST["camposn"]) ? "s" : "n") . "'";
+                    $values .= "'" . (isset($_REQUEST["camposn"]) ? 1 : 0) . "'";
                 } else {
                     $values .= "'" . $_REQUEST[$currentRecordRows["COLUMN_NAME"]] . "'";
                 }

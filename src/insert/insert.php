@@ -9,6 +9,7 @@
 </head>
 <?php
 require_once("../common/php/DBConnector.php");
+echo var_dump($_SESSION);
 ?>
 
 <body>
@@ -93,7 +94,7 @@ require_once("../common/php/DBConnector.php");
                                                 break;
                                             case "radio":
                                                 $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])), $configInfo);
-                                                for ($i = 0; $i < count($foreignTable); $i++) {
+                                                for ($i = 1; $i <= count($foreignTable); $i++) {
                                                     echo "<input class=\"form-check-input\" type=\"radio\" name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . $i . "\" value=\"" . $foreignTable[$i]['id'] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $foreignTable[$i][$configInfo['t' . strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])) . 'MAINFIELD']] . "    </input>";
                                                 }
 

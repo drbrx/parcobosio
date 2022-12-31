@@ -16,39 +16,45 @@
     </div>
 
     <div style="float: left; width: 90%; background-color: #272a2e">
-        <div id="searchBarWrapper" class="d-flex align-items-center" style="height: 50%;">
+        <!--<div id="searchBarWrapper" class="d-flex align-items-center" style="height: 50%;">
             <div id="searchBar" class="container">
                 <form action="main.php" class="input-group input-group-lg">
                     <input type="text" placeholder="Search globally across all fields and records" name="search" class="form-control">
                     <button type="submit" class="btn btn-outline-primary" type="button">Search</button>
                 </form>
             </div>
-        </div>
-        <div id="list" class="d-flex align-items-center flex-column justify-content-start" style="height: 50%;">
-            <div id="tableWrapper" class="container-md">
-                <?php
-                require_once("../common/php/DBConnector.php");
+        </div>-->
 
-                if (is_array($_SESSION['table_name'])) { //multiple table functionality
-                    $tableIndex = 0;
-                    foreach ($_SESSION['table_name'] as $table) {
-                        //echo $table;
-                        $currentConfig = array();
-                        foreach (array_keys($configInfo) as $configKey) {
-                            $currentConfig += [$configKey => is_array($configInfo[$configKey]) ? $configInfo[$configKey][$tableIndex] : $configInfo[$configKey]];
-                        }
-                        showTable($currentConfig, $_SESSION["table_name"][$tableIndex]);
-                        echo "<br></br>";
-                        $tableIndex++;
+        <a class="btn btn-info" href="../../index.php" role="button">Cambia parco...</a>
+
+        <?php
+        require_once("../common/php/DBConnector.php");
+        if (isset($_REQUEST['park'])) {
+            $_SESSION['park_id'] = $_REQUEST['park'];
+        } else if (!isset($_SESSION['park'])) {
+            $_SESSION['park_id'] = 0;
+        }
+
+        if (is_array($_SESSION['table_name'])) { //multiple table functionality
+            $tableIndex = 0;
+            foreach ($_SESSION['table_name'] as $table) {
+                //echo $table;
+                if (isset($configInfo[$table . "PERMISSIONS"]) && $configInfo[$table . "PERMISSIONS"] != "none") {
+                    $currentConfig = array();
+                    foreach (array_keys($configInfo) as $configKey) {
+                        $currentConfig += [$configKey => is_array($configInfo[$configKey]) ? $configInfo[$configKey][$tableIndex] : $configInfo[$configKey]];
                     }
-                } else {
-                    showTable($configInfo, $_SESSION["table_name"]);
+                    showTable($currentConfig, $_SESSION["table_name"][$tableIndex]);
                 }
-                ?>
+                $tableIndex++;
+            }
+        } else {
+            showTable($configInfo, $_SESSION["table_name"]);
+        }
+        ?>
 
-            </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 </body>
 
@@ -56,6 +62,8 @@
 
 function showTable($configInfo, $table)
 {
+    echo "<div class=\"d-flex align-items-center flex-column justify-content-start\" style=\"height: 50%;\">
+            <div id=\"tableWrapper\" class=\"container-md\">";
     $connMySQL = new ConnectionMySQL();
     $pdo = $connMySQL->getConnection();
     $maxReads = $_SESSION['rowsPerPage'];
@@ -75,8 +83,11 @@ function showTable($configInfo, $table)
                         <th scope=\"col\"></th>
                     </tr> </thead>";
         foreach ($stmtResponse as $currentRecord) {
-            echo    "<tr>   <td><p class=\"fw-bold\">" . $currentRecord['id'] . "</p></td>
-                    <td>" . $currentRecord[$configInfo[$table . 'MAINFIELD']] . "</td>
+            if (isset($configInfo[$configInfo[$table . 'MAINFIELD'] . "EXTERNAL"]) && $configInfo[$configInfo[$table . 'MAINFIELD'] . "EXTERNAL"]) {
+                $foreignTable = getForeignValues(strtolower(str_replace("id", '', $configInfo[$table . 'MAINFIELD'])), $configInfo);
+            }
+            echo    "<tr><td><p class=\"fw-bold\">" . $currentRecord['id'] . "</p></td>
+                    <td>" . (isset($foreignTable) ? $foreignTable[$currentRecord[$configInfo[$table . 'MAINFIELD']]] : $currentRecord[$configInfo[$table . 'MAINFIELD']]) . "</td>
                     <td><a class=\"btn btn-primary\" href=\"../details/details.php?id=" . $currentRecord['id'] . "&table=" . $table . "\" role=\"button\">Details</a></td>
                     </tr>";
         }
@@ -89,7 +100,9 @@ function showTable($configInfo, $table)
                 <div id=\"pageWrapper\">
                     <a class=\"btn btn-dark\" role=\"button\" href=\"main.php?" . (isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "") . "page=" . ($page - 1) . "\" id=\"previousPage\" class=\"pageButton\" style=\"visibility:" . ($page <= 0 ? 'hidden;' : 'visible;') . "\">Previous</a>
                     <a class=\"btn btn-dark\" role=\"button\" href=\"main.php?" . (isset($_REQUEST['search']) ? "search=" . $_REQUEST['search'] . "&" : "") . "page=" . ($page + 1) . "\" id=\"nextPage\" class=\"pageButton\" style=\"visibility:" . ($page >= ($maxPages - 1) ? 'hidden;' : 'visible;') . "\">Next</a>
-                </div>";
+                </div>
+                </div>
+    ";
 }
 
 function generateFilter($searchTerm, $tableName, $configInfo)
@@ -126,4 +139,20 @@ function generateFilter($searchTerm, $tableName, $configInfo)
     }
 
     return $filter;
+}
+
+function getForeignValues($tableName, $configInfo)
+{
+    $connMySQL = new ConnectionMySQL();
+    $pdo = $connMySQL->getConnection();
+    $foreignTableStmt = $pdo->prepare("SELECT id, " . $configInfo['t' . $tableName . 'MAINFIELD'] . " FROM t" . $tableName);
+    $foreignTableStmt->execute();
+    $foreignTableStmtResponse = $foreignTableStmt->fetchAll();
+
+    //echo var_dump($foreignTableStmtResponse);
+    $returnArray = array();
+    foreach ($foreignTableStmtResponse as $row) {
+        $returnArray += [$row['id'] => $row[$configInfo['t' . $tableName . 'MAINFIELD']]];
+    }
+    return $returnArray;
 }

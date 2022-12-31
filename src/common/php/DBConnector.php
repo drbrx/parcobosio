@@ -18,7 +18,6 @@ if ($config != false) {
     fclose($config);
 }
 
-$_SESSION['park_id'] = -1;
 $_SESSION['db_name'] = $configInfo['dbName'];
 $_SESSION['table_name'] = $configInfo['tabName'];
 $_SESSION['rowsPerPage'] = $configInfo['rowsPerPage'];
