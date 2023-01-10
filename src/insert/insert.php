@@ -9,7 +9,7 @@
 </head>
 <?php
 require_once("../common/php/DBConnector.php");
-echo var_dump($_SESSION);
+//echo var_dump($_SESSION);
 ?>
 
 <body>
@@ -107,6 +107,7 @@ echo var_dump($_SESSION);
                                                 break;
                                             case "day":
                                                 echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                                echo "<option value=NULL " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">Inserire se noto</option>";
                                                 for ($i = 1; $i <= 31; $i++) {
                                                     echo "<option value=\"" . $i . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $i .  "</option>";
                                                 }
@@ -114,6 +115,7 @@ echo var_dump($_SESSION);
                                                 break;
                                             case "month":
                                                 echo "<select class=\"form-select form-select-sm\" name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">";
+                                                echo "<option value=NULL " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">Inserire se noto</option>";
                                                 for ($i = 1; $i <= 12; $i++) {
                                                     echo "<option value=\"" . $i . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . DateTime::createFromFormat('!m', $i)->format('F') .  "</option>";
                                                 }
