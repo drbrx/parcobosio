@@ -119,6 +119,11 @@
             )]}
             listaAnimali[result['specie']][result['cucciolo']] += 1;
             }
+            $total = 0;
+            foreach(listaAnimali){
+            $total += listaAnimali[1] / (listaAnimali[0] + listaAnimali[1]);
+            }
+            echo $total/count(listaAnimali)
             */
             /*
             SELECT id, annoNascitaStimato, meseNascitaStimato, giornoNascitaStimato
