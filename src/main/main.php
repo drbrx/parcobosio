@@ -53,6 +53,85 @@
         }
         ?>
 
+        <div>
+            //SELECT tanimale.id AS id, tparco.nomeParco AS parco FROM tanimale INNER JOIN tparco ON tparco.id = tanimale.idParco WHERE tanimale.idSpecieAnimale = ?
+            /*foreach(speciePianta)
+            select count(id) AS illCount
+            from tpianta
+            where tpianta.statoSalute = 0;
+            select count(id) AS totCount
+            from tpianta
+
+            if(illcount >= 75%Totcount)
+            echo speciepianta
+            */
+            /*
+            input anno
+            input specie
+            SELECT count(id) AS bornCount FROM tanimale/pianta WHERE tanimale.idSpecieAnimale/Pianta = anno AND tanimale.annoNascitaStimato = anno
+            */
+            /*
+            SELECT
+            COUNT(
+            DISTINCT tpianta.idSpeciePianta
+            ) AS arbustiCount,
+            tparco.nomeParco AS parco
+            FROM
+            tpianta
+            INNER JOIN tspeciepianta ON tspeciepianta.id = tpianta.idSpeciePianta
+            INNER JOIN tgenere ON tgenere.id = tspeciepianta.idGenere
+            INNER JOIN tparco ON tparco.id = 1
+            WHERE
+            tpianta.idParco = 1 AND tgenere.idCategoria = 2;
+            */
+            /*
+            SELECT
+            COUNT(
+            DISTINCT tpianta.idSpeciePianta
+            ) AS piniCount,
+            tparco.nomeParco AS parco
+            FROM
+            tpianta
+            INNER JOIN tspeciepianta ON tspeciepianta.id = tpianta.idSpeciePianta
+            INNER JOIN tgenere ON tgenere.id = tspeciepianta.idGenere
+            INNER JOIN tparco ON tparco.id = 2
+            WHERE
+            tpianta.idParco = 2 AND tgenere.nomeGenere = 'Pino';
+            */
+            /*
+            listaAnimali = array();
+            SELECT
+            tanimale.id AS esemplare,
+            tanimale.idSpecieAnimale AS specie,
+            tanimale.cucciolo AS cucciolo
+            FROM
+            tanimale
+            INNER JOIN tspecieanimale ON tspecieanimale.id = tanimale.idSpecieAnimale
+            INNER JOIN tparco ON tparco.id = tanimale.idParco
+            INNER JOIN tregione ON tparco.idRegione = tregione.id
+            WHERE
+            tregione.id = ?;
+            foreach(result){
+            if(!isset(listaAnimali[result['specie']])){
+            listaAnimali += ['result['specie']' => array(
+            '1' => 0,
+            '0' => 0
+            )]}
+            listaAnimali[result['specie']][result['cucciolo']] += 1;
+            }
+            */
+            /*
+            SELECT id, annoNascitaStimato, meseNascitaStimato, giornoNascitaStimato
+            FROM tanimale
+            ORDER BY tanimale.annoNascitaStimato ASC, tanimale.meseNascitaStimato ASC, tanimale.giornoNascitaStimato ASC
+            LIMIT 1;
+            SELECT id, annoNascitaStimato, meseNascitaStimato, giornoNascitaStimato
+            FROM tpianta
+            ORDER BY tanimale.annoNascitaStimato ASC, tanimale.meseNascitaStimato ASC, tanimale.giornoNascitaStimato ASC
+            LIMIT 1;
+            echo max(results)
+            */
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
