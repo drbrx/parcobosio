@@ -306,7 +306,8 @@ function getForeignValues($tableName, $configInfo)
                     console.log(queryResponse);
                     $("#showQ1table").html("<th><td>codice</td><td>parco</td></th>");
 
-                    for (i = 0; i < queryResponse.legth; i++) {
+                    for (let i = 0; i < queryResponse.length; i++) {
+                        console.log(i);
                         $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
                     };
                 }
