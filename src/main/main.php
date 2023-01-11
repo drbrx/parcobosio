@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="../common/css/sidebar.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <title>PHPYourAdmin Control Panel</title>
 </head>
@@ -51,10 +52,58 @@
         } else {
             showTable($configInfo, $_SESSION["table_name"]);
         }
+
         ?>
 
-        <div>
-            //SELECT tanimale.id AS id, tparco.nomeParco AS parco FROM tanimale INNER JOIN tparco ON tparco.id = tanimale.idParco WHERE tanimale.idSpecieAnimale = ?
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Elenca tutti gli esemplari di animale di una certa specie e in che parco si trovano
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Seleziona la specie di fauna da cercare:
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeSpecieAnimale FROM tspecieanimale");
+                                $foreignTableStmt->execute();
+                                $foreignTable = $foreignTableStmt->fetchAll();
+
+                                $tableIndex = 0;
+                                foreach ($foreignTable as $species) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q1(" . $species['id'] . ")\">" . $species['nomeSpecieAnimale'] . "</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div id="showQ1">
+                            <table id="showQ1table">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Accordion Item #2
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             /*foreach(speciePianta)
             select count(id) AS illCount
             from tpianta
@@ -240,3 +289,30 @@ function getForeignValues($tableName, $configInfo)
     }
     return $returnArray;
 }
+
+?>
+
+<script>
+    function q1(idSpecie) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q1.php",
+            data: {
+                specie: idSpecie
+            },
+            success: function(queryResponse) {
+                if (queryResponse != "") {
+                    queryResponse = JSON.parse(queryResponse);
+                    console.log(queryResponse);
+                    $("#showQ1table").html("<th><td>codice</td><td>parco</td></th>");
+
+                    for (i = 0; i < queryResponse.legth; i++) {
+                        $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
+                    };
+                }
+
+            },
+
+        })
+    }
+</script>
