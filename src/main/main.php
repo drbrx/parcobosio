@@ -36,7 +36,7 @@
             $_SESSION['park_id'] = 0;
         }
 
-        if (is_array($_SESSION['table_name'])) { //multiple table functionality
+        /*if (is_array($_SESSION['table_name'])) { //multiple table functionality
             $tableIndex = 0;
             foreach ($_SESSION['table_name'] as $table) {
                 //echo $table;
@@ -51,7 +51,7 @@
             }
         } else {
             showTable($configInfo, $_SESSION["table_name"]);
-        }
+        }*/
 
         ?>
 
@@ -170,22 +170,38 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Elenco specie in via d'estizione (75% o più degli esemplari malati)
+                            Contare le nascite di una certa specie in un certo anno
                         </button>
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            //
+                            <form id="q3form">
+                                <select name="specie" id="" required>
+                                    <option value="-1">Selezionare la specie</option>
+                                    <?php
+                                    $connMySQL = new ConnectionMySQL();
+                                    $pdo = $connMySQL->getConnection();
+                                    $foreignTableStmt = $pdo->prepare("SELECT id, nomeSpecieAnimale FROM tspecieanimale");
+                                    $foreignTableStmt->execute();
+                                    $foreignTable = $foreignTableStmt->fetchAll();
+
+                                    foreach ($foreignTable as $species) {
+                                        echo "<option value='" . $species['id'] . "'>" . $species['nomeSpecieAnimale'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                                <input type="number" name="anno" placeholder="Selezionare l'anno" value="<?php echo date("Y"); ?>" required>
+                                <input type="submit" value="Cerca">
+                            </form>
+                            <div id="q3response">
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            /*
-            input anno
-            input specie
             SELECT count(id) AS bornCount FROM tanimale/pianta WHERE tanimale.idSpecieAnimale/Pianta = anno AND tanimale.annoNascitaStimato = anno
-            */
             /*
             SELECT
             COUNT(
@@ -259,6 +275,30 @@
 </body>
 
 <script>
+    $(document).ready(function() {
+        $('#q3form').on('submit', function(e) {
+            e.preventDefault();
+            var formDataSer = $(this).serialize();
+            var formData = $.parseJSON('{"' + formDataSer.replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+            console.log(formDataSer);
+            console.log(formData);
+            if (formData.specie >= 0) {
+
+                $.ajax({
+                    type: 'GET',
+                    url: './php/q3.php',
+                    data: formDataSer,
+                    success: function(response) {
+                        $('#q3response').html("Sono state stimate <b>" + response + "</b> nascite nel " + formData.anno);
+                    }
+                });
+            } else {
+                alert("Scelgiere una specie valida e ritentare la ricerca");
+            }
+
+        });
+    });
+
     function q1(idSpecie) {
         $.ajax({
             type: 'GET',
