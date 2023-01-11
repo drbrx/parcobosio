@@ -76,7 +76,6 @@
                                 $foreignTableStmt->execute();
                                 $foreignTable = $foreignTableStmt->fetchAll();
 
-                                $tableIndex = 0;
                                 foreach ($foreignTable as $species) {
                                     echo "<li><a class=\"dropdown-item\" onclick=\"q1(" . $species['id'] . ")\">" . $species['nomeSpecieAnimale'] . "</a></li>";
                                 }
@@ -93,27 +92,95 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Accordion Item #2
+                            Elenco specie in via d'estizione (75% o più degli esemplari malati)
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <?php
+
+                            $connMySQL = new ConnectionMySQL();
+                            $pdo = $connMySQL->getConnection();
+                            $animalStmt = $pdo->prepare("SELECT id, nomeSpecieAnimale FROM tspecieanimale");
+                            $animalStmt->execute();
+                            $animals = $animalStmt->fetchAll();
+
+                            $found = false;
+                            foreach ($animals as $species) {
+
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $allStmt = $pdo->prepare("select count(id) AS totCount FROM tanimale WHERE idSpecieAnimale = " . $species['id']);
+                                $allStmt->execute();
+                                $allAnimals = $allStmt->fetchAll()[0]['totCount'];
+
+                                if ($allAnimals != 0) {
+                                    $connMySQL = new ConnectionMySQL();
+                                    $pdo = $connMySQL->getConnection();
+                                    $illStmt = $pdo->prepare("SELECT count(id) AS totCount FROM tanimale WHERE idSpecieAnimale = " . $species['id'] . " AND statoSalute = 0");
+                                    $illStmt->execute();
+                                    $illAnimals = $illStmt->fetchAll()[0]['totCount'];
+
+                                    if ($illAnimals / $allAnimals >= 0.75) {
+                                        if (!$found) {
+                                            echo "<b>Animali:</b><br>";
+                                            $found = true;
+                                        }
+                                        echo  $species['nomeSpecieAnimale'] . ": " . $illAnimals . "/" . $allAnimals . " (" . round($illAnimals / $allAnimals * 100, 0) . "% degli esemplari NON sono in buona salute)<br>";
+                                    }
+                                }
+                            }
+
+                            $connMySQL = new ConnectionMySQL();
+                            $pdo = $connMySQL->getConnection();
+                            $plantStmt = $pdo->prepare("SELECT id, nomeSpeciePianta FROM tspeciepianta");
+                            $plantStmt->execute();
+                            $plants = $plantStmt->fetchAll();
+
+                            $found = false;
+                            foreach ($plants as $species) {
+
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $allStmt = $pdo->prepare("select count(id) AS totCount FROM tpianta WHERE idSpeciePianta = " . $species['id']);
+                                $allStmt->execute();
+                                $allPlants = $allStmt->fetchAll()[0]['totCount'];
+
+                                if ($allPlants != 0) {
+                                    $connMySQL = new ConnectionMySQL();
+                                    $pdo = $connMySQL->getConnection();
+                                    $illStmt = $pdo->prepare("SELECT count(id) AS totCount FROM tpianta WHERE idSpeciePianta = " . $species['id'] . " AND statoSalute = 0");
+                                    $illStmt->execute();
+                                    $illPlants = $illStmt->fetchAll()[0]['totCount'];
+
+                                    if ($illPlants / $allPlants >= 0.75) {
+                                        if (!$found) {
+                                            echo "<b>Piante:</b><br>";
+                                            $found = true;
+                                        }
+                                        echo  $species['nomeSpeciePianta'] . ": " . $illPlants . "/" . $allPlants . " (" . round($illPlants / $allPlants * 100, 0) . "% degli esemplari NON sono in buona salute)<br>";
+                                    }
+                                }
+                            }
+
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Elenco specie in via d'estizione (75% o più degli esemplari malati)
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            //
                         </div>
                     </div>
                 </div>
             </div>
 
-            /*foreach(speciePianta)
-            select count(id) AS illCount
-            from tpianta
-            where tpianta.statoSalute = 0;
-            select count(id) AS totCount
-            from tpianta
-
-            if(illcount >= 75%Totcount)
-            echo speciepianta
-            */
             /*
             input anno
             input specie
@@ -190,6 +257,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 </body>
+
+<script>
+    function q1(idSpecie) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q1.php",
+            data: {
+                specie: idSpecie
+            },
+            success: function(queryResponse) {
+                if (queryResponse != "") {
+                    queryResponse = JSON.parse(queryResponse);
+                    console.log(queryResponse);
+                    $("#showQ1table").html("<th>codice</th><th>parco</th>");
+
+                    for (let i = 0; i < queryResponse.length; i++) {
+                        console.log(i);
+                        $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
+                    };
+                }
+
+            },
+
+        })
+    }
+</script>
 
 <?php
 
@@ -291,29 +384,3 @@ function getForeignValues($tableName, $configInfo)
 }
 
 ?>
-
-<script>
-    function q1(idSpecie) {
-        $.ajax({
-            type: 'GET',
-            url: "./php/q1.php",
-            data: {
-                specie: idSpecie
-            },
-            success: function(queryResponse) {
-                if (queryResponse != "") {
-                    queryResponse = JSON.parse(queryResponse);
-                    console.log(queryResponse);
-                    $("#showQ1table").html("<th><td>codice</td><td>parco</td></th>");
-
-                    for (let i = 0; i < queryResponse.length; i++) {
-                        console.log(i);
-                        $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
-                    };
-                }
-
-            },
-
-        })
-    }
-</script>
