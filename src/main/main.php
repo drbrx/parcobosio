@@ -1,7 +1,6 @@
 <html>
 
 <head>
-    <!--<link rel="stylesheet" href="css/main.css">-->
     <link rel="stylesheet" href="../common/css/sidebar.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,14 +16,6 @@
     </div>
 
     <div style="float: left; width: 90%; background-color: #272a2e">
-        <!--<div id="searchBarWrapper" class="d-flex align-items-center" style="height: 50%;">
-            <div id="searchBar" class="container">
-                <form action="main.php" class="input-group input-group-lg">
-                    <input type="text" placeholder="Search globally across all fields and records" name="search" class="form-control">
-                    <button type="submit" class="btn btn-outline-primary" type="button">Search</button>
-                </form>
-            </div>
-        </div>-->
 
         <a class="btn btn-info" href="../../index.php" role="button">Cambia parco...</a>
 
@@ -35,23 +26,6 @@
         } else if (!isset($_SESSION['park'])) {
             $_SESSION['park_id'] = 0;
         }
-
-        /*if (is_array($_SESSION['table_name'])) { //multiple table functionality
-            $tableIndex = 0;
-            foreach ($_SESSION['table_name'] as $table) {
-                //echo $table;
-                if (isset($configInfo[$table . "PERMISSIONS"]) && $configInfo[$table . "PERMISSIONS"] != "none") {
-                    $currentConfig = array();
-                    foreach (array_keys($configInfo) as $configKey) {
-                        $currentConfig += [$configKey => is_array($configInfo[$configKey]) ? $configInfo[$configKey][$tableIndex] : $configInfo[$configKey]];
-                    }
-                    showTable($currentConfig, $_SESSION["table_name"][$tableIndex]);
-                }
-                $tableIndex++;
-            }
-        } else {
-            showTable($configInfo, $_SESSION["table_name"]);
-        }*/
 
         ?>
 
@@ -582,7 +556,6 @@ function getForeignValues($tableName, $configInfo)
     $foreignTableStmt->execute();
     $foreignTableStmtResponse = $foreignTableStmt->fetchAll();
 
-    //echo var_dump($foreignTableStmtResponse);
     $returnArray = array();
     foreach ($foreignTableStmtResponse as $row) {
         $returnArray += [$row['id'] => $row[$configInfo['t' . $tableName . 'MAINFIELD']]];

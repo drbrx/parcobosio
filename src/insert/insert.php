@@ -61,7 +61,7 @@ require_once("../common/php/DBConnector.php");
                                 if ($currentRecord["TABLE_SCHEMA"] == $_SESSION['db_name'] && !isset($configInfo[$currentRecord["COLUMN_NAME"] . "HIDDEN"])) {
                                     //echo var_dump($currentRecord);
                                     if ($currentRecord["EXTRA"] != "auto_increment") {
-                                        echo "<td class=\"fw-bold\">" . $currentRecord["COLUMN_NAME"] . "</td><td>";
+                                        echo "<td class=\"fw-bold\">" . (isset($configInfo[$currentRecord["COLUMN_NAME"] . "ALIAS"]) ? $configInfo[$currentRecord["COLUMN_NAME"] . "ALIAS"] : $currentRecord["COLUMN_NAME"]) . "</td><td>";
                                         $maxLenght = isset($configInfo[$currentRecord["COLUMN_NAME"] . "Length"]) ? intval($configInfo[$currentRecord["COLUMN_NAME"] . "Length"]) : preg_replace("/[^0-9]/", "", $currentRecord["COLUMN_TYPE"]);
                                         //echo $currentRecord["COLUMN_NAME"] . "Length" . " - " . isset($configInfo[$currentRecord["COLUMN_NAME"] . "Lenght"]) . " - " . $maxLenght;
                                         $dataType = strtok($currentRecord["COLUMN_TYPE"], '(');
