@@ -235,7 +235,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingFive">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                        Contare e visualizzare le specie diarbusti in una regione
+                        Contare le specie di pino in una regione
                     </button>
                 </h2>
                 <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
@@ -253,12 +253,12 @@
                                 $foreignTable = $foreignTableStmt->fetchAll();
 
                                 foreach ($foreignTable as $region) {
-                                    echo "<li><a class=\"dropdown-item\" onclick=\"q4(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q5(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
                                 }
                                 ?>
                             </ul>
                         </div>
-                        <div id="showQ4">
+                        <div id="showQ5">
 
                         </div>
                     </div>
@@ -378,6 +378,38 @@
                         for (let j = 0; j < q4Response.length; j++) {
                             $("#showQ4table").append("<tr><td>" + q4Response[j].specie + "</td></tr>");
                         };
+                    }
+
+                }
+
+            },
+
+        })
+    }
+
+    function q5(idRegione) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q5.php",
+            data: {
+                regione: idRegione
+            },
+            success: function(q5Response) {
+                if (q5Response != "") {
+                    console.log(q5Response);
+                    q5Response = JSON.parse(q5Response);
+                    console.log(q5Response);
+
+                    $("#showQ5").html("<table id=\"showQ5table\"></table>");
+                    if (q5Response.length > 0) {
+                        $("#showQ5table").html("<th>Parco</th><th>Speci di pino</th>");
+                        for (let k = 0; k < q5Response.length; k++) {
+                            if (q5Response[k].piniCount > 0) {
+                                $("#showQ5table").append("<tr><td>" + q5Response[k].parco + "</td><td>" + q5Response[k].piniCount + "</td></tr>");
+                            }
+                        };
+                    } else {
+                        $("#showQ5table").html("Non sono stati trovati pini nella regione selezionata");
                     }
 
                 }
