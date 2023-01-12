@@ -9,6 +9,7 @@
 </head>
 <?php
 require_once("../common/php/DBConnector.php");
+
 //echo var_dump($_SESSION);
 ?>
 
@@ -19,26 +20,10 @@ require_once("../common/php/DBConnector.php");
     </div>
 
     <div style="float: left; width: 90%; background-color: #272a2e; height: 100%;">
+
         <?php
-        if (is_array($_SESSION['table_name'])) { //multiple table functionality
-        ?>
-            <div class="btn-group dropend">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Cambia classe di esemplare da catalogare
-                </button>
-                <ul class="dropdown-menu">
-                    <?php
-                    $tableIndex = 0;
-                    foreach ($_SESSION['table_name'] as $tableOption) {
-                        echo "<li><a class=\"dropdown-item\" href=\"./insert.php?table=" . $tableOption . "\">" . $tableOption . "</a></li>";
-                    }
-                    ?>
-                </ul>
-            </div>
-            <?php
-            if (isset($_REQUEST["table"])) {
-                $table = $_REQUEST["table"];
-            }
+        if (isset($_REQUEST["table"])) {
+            $table = $_REQUEST["table"];
         } else {
             $table = $_SESSION['table_name'];
         }
@@ -50,10 +35,28 @@ require_once("../common/php/DBConnector.php");
             $stmtResponse = $stmt->fetchAll();
 
 
-            ?>
+        ?>
             <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
                 <form action="php/send.php">
                     <div id="tableWrapper" class="container-md">
+                        <?php
+                        if (is_array($_SESSION['table_name'])) { //multiple table functionality
+                        ?>
+                            <div class="btn-group dropend">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Cambia classe di esemplare da catalogare
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <?php
+                                    $tableIndex = 0;
+                                    foreach ($_SESSION['table_name'] as $tableOption) {
+                                        echo "<li><a class=\"dropdown-item\" href=\"./insert.php?table=" . $tableOption . "\">" . $tableOption . "</a></li>";
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        <?php
+                        } ?>
                         <table class="table table-dark table-striped-columns">
 
                             <?php
@@ -137,6 +140,12 @@ require_once("../common/php/DBConnector.php");
                                 <td><input class="btn btn-primary" type="submit" name="submit" value="Invia" /></td>
                             </tr>
                         </table>
+                        <?php if (isset($_REQUEST["added"])) { ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Esemplare catalogato
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php }; ?>
                     </div>
                 </form>
             </div>
@@ -148,7 +157,9 @@ require_once("../common/php/DBConnector.php");
                     </div>
                 </div>
             </div>
-        <?php } ?>
+        <?php }; ?>
+
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>

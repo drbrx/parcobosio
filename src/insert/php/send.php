@@ -45,4 +45,4 @@ if (isset($_REQUEST)) {
     echo "no data";
 };
 
-header("location: ../insert.php?table=" . $_REQUEST["table"]);
+header("location: ../insert.php?table=" . $_REQUEST["table"] . "&added=1");
