@@ -264,6 +264,67 @@
                     </div>
                 </div>
             </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSix">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        q6 </button>
+                </h2>
+                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                q6b </button>
+                            <ul class="dropdown-menu">
+                                <?php
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeRegione FROM tregione");
+                                $foreignTableStmt->execute();
+                                $foreignTable = $foreignTableStmt->fetchAll();
+
+                                foreach ($foreignTable as $region) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q6(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div id="showQ6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSeven">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                        q7 </button>
+                </h2>
+                <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                q7b </button>
+                            <ul class="dropdown-menu">
+                                <?php
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeRegione FROM tregione");
+                                $foreignTableStmt->execute();
+                                $foreignTable = $foreignTableStmt->fetchAll();
+
+                                foreach ($foreignTable as $region) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q7(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div id="showQ7">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
             /*
