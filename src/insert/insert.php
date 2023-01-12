@@ -19,38 +19,41 @@ require_once("../common/php/DBConnector.php");
     </div>
 
     <div style="float: left; width: 90%; background-color: #272a2e; height: 100%;">
-        <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
-            <form action="php/send.php">
-                <div id="tableWrapper" class="container-md">
+        <?php
+        if (is_array($_SESSION['table_name'])) { //multiple table functionality
+        ?>
+            <div class="btn-group dropend">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Cambia classe di esemplare da catalogare
+                </button>
+                <ul class="dropdown-menu">
                     <?php
-                    if (is_array($_SESSION['table_name'])) { //multiple table functionality
-                        if (isset($_REQUEST["table"])) {
-                            $table = $_REQUEST["table"];
-                        } else {
-                            $table = $_SESSION['table_name'];
-                        }
-                        if (isset($table)) {
-                            $connMySQL = new ConnectionMySQL();
-                            $pdo = $connMySQL->getConnection();
-                            $stmt = $pdo->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" . $table . "'");
-                            $stmt->execute();
-                            $stmtResponse = $stmt->fetchAll();
+                    $tableIndex = 0;
+                    foreach ($_SESSION['table_name'] as $tableOption) {
+                        echo "<li><a class=\"dropdown-item\" href=\"./insert.php?table=" . $tableOption . "\">" . $tableOption . "</a></li>";
+                    }
                     ?>
-                            <div class="btn-group dropend">
-                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Cambia classe di esemplare da catalogare
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <?php
-                                    $tableIndex = 0;
-                                    foreach ($_SESSION['table_name'] as $tableOption) {
-                                        echo "<li><a class=\"dropdown-item\" href=\"./insert.php?table=" . $tableOption . "\">" . $tableOption . "</a></li>";
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
-                        <?php
-                        } ?>
+                </ul>
+            </div>
+            <?php
+            if (isset($_REQUEST["table"])) {
+                $table = $_REQUEST["table"];
+            }
+        } else {
+            $table = $_SESSION['table_name'];
+        }
+        if (isset($table)) {
+            $connMySQL = new ConnectionMySQL();
+            $pdo = $connMySQL->getConnection();
+            $stmt = $pdo->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" . $table . "'");
+            $stmt->execute();
+            $stmtResponse = $stmt->fetchAll();
+
+
+            ?>
+            <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
+                <form action="php/send.php">
+                    <div id="tableWrapper" class="container-md">
                         <table class="table table-dark table-striped-columns">
 
                             <?php
@@ -127,12 +130,14 @@ require_once("../common/php/DBConnector.php");
                                                 $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])), $configInfo);
 
                                                 echo "
-                                                <input type=\"text\" list=\"" . $currentRecord["COLUMN_NAME"] . "\"/>
-                                                    <datalist id=\"" . $currentRecord["COLUMN_NAME"] . "\">";
+                                                <input id=\"" . $currentRecord["COLUMN_NAME"] . "Input\" type=\"text\" class=\"form-control\" list=\"" . $currentRecord["COLUMN_NAME"] . "\"/>
+                                                <datalist id=\"" . $currentRecord["COLUMN_NAME"] . "\">";
                                                 foreach ($foreignTable as $foreignRow) {
-                                                    echo "<option value=\"" . $foreignRow['id'] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $foreignRow[$configInfo['t' . strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
+                                                    echo "<option data-value=\"" . $foreignRow['id'] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $foreignRow[$configInfo['t' . strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
                                                 };
-                                                echo "</datalist>";;
+                                                echo "<input type=\"hidden\" name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . "Input-hidden\">";
+
+                                                echo "</datalist>";
                                                 break;
                                         }
                                     }
@@ -152,23 +157,46 @@ require_once("../common/php/DBConnector.php");
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php }; ?>
-                </div>
-            </form>
-        </div>
-    <?php } else { ?>
-        <div class="d-flex align-items-center justify-content-center">
-            <div id="selectMessage" class="alert alert-info" role="alert" style="width: fit-content">
-                <div id="deletionMessageTip">
-                    Selezionare la classe di esemplare da catalogare.
+                    </div>
+                </form>
+            </div>
+        <?php } else { ?>
+            <div class="d-flex align-items-center justify-content-center">
+                <div id="selectMessage" class="alert alert-info" role="alert" style="width: fit-content">
+                    <div id="deletionMessageTip">
+                        Selezionare la classe di esemplare da catalogare.
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php }; ?>
+        <?php }; ?>
 
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
+
+<script>
+    document.querySelector('input[list]').addEventListener('input', function(e) {
+        var input = e.target,
+            list = input.getAttribute('list'),
+            options = document.querySelectorAll('#' + list + ' option'),
+            hiddenInput = document.getElementById(input.getAttribute('id') + '-hidden'),
+            inputValue = input.value;
+        console.log(input);
+
+        hiddenInput.value = inputValue;
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+
+            if (option.innerText === inputValue) {
+                hiddenInput.value = option.getAttribute('data-value');
+                break;
+            }
+        }
+    });
+</script>
+
 <?php
 function getForeignValues($tableName, $configInfo)
 {
