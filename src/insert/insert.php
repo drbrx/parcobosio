@@ -10,7 +10,7 @@
 <?php
 require_once("../common/php/DBConnector.php");
 
-//echo var_dump($_SESSION);
+echo var_dump($_SESSION);
 ?>
 
 <body>
@@ -33,8 +33,6 @@ require_once("../common/php/DBConnector.php");
             $stmt = $pdo->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" . $table . "'");
             $stmt->execute();
             $stmtResponse = $stmt->fetchAll();
-
-
         ?>
             <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
                 <form action="php/send.php">
@@ -127,6 +125,18 @@ require_once("../common/php/DBConnector.php");
                                             case "year":
                                                 echo "<input class=\"form-control\" type=\"text\" pattern=\"\d*\" maxlength=\"4\" name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . "\" placeholder=\"Numero di max 4 cifre\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . "></input>";
 
+                                                break;
+                                            case "selectCustom":
+
+                                                $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])), $configInfo);
+
+                                                echo "
+                                                <input type=\"text\" list=\"" . $currentRecord["COLUMN_NAME"] . "\"/>
+                                                    <datalist id=\"" . $currentRecord["COLUMN_NAME"] . "\">";
+                                                foreach ($foreignTable as $foreignRow) {
+                                                    echo "<option value=\"" . $foreignRow['id'] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $foreignRow[$configInfo['t' . strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
+                                                };
+                                                echo "</datalist>";;
                                                 break;
                                         }
                                     }
