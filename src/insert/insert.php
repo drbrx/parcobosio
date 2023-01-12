@@ -21,24 +21,25 @@ require_once("../common/php/DBConnector.php");
     <div style="float: left; width: 90%; background-color: #272a2e; height: 100%;">
 
         <?php
-        if (isset($_REQUEST["table"])) {
-            $table = $_REQUEST["table"];
-        } else {
-            $table = $_SESSION['table_name'];
-        }
-        if (isset($table)) {
-            $connMySQL = new ConnectionMySQL();
-            $pdo = $connMySQL->getConnection();
-            $stmt = $pdo->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" . $table . "'");
-            $stmt->execute();
-            $stmtResponse = $stmt->fetchAll();
+
         ?>
-            <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
-                <form action="php/send.php">
-                    <div id="tableWrapper" class="container-md">
-                        <?php
-                        if (is_array($_SESSION['table_name'])) { //multiple table functionality
-                        ?>
+        <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
+            <form action="php/send.php">
+                <div id="tableWrapper" class="container-md">
+                    <?php
+                    if (is_array($_SESSION['table_name'])) { //multiple table functionality
+                        if (isset($_REQUEST["table"])) {
+                            $table = $_REQUEST["table"];
+                        } else {
+                            $table = $_SESSION['table_name'];
+                        }
+                        if (isset($table)) {
+                            $connMySQL = new ConnectionMySQL();
+                            $pdo = $connMySQL->getConnection();
+                            $stmt = $pdo->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" . $table . "'");
+                            $stmt->execute();
+                            $stmtResponse = $stmt->fetchAll();
+                    ?>
                             <div class="btn-group dropend">
                                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                     Cambia classe di esemplare da catalogare
@@ -155,18 +156,18 @@ require_once("../common/php/DBConnector.php");
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php }; ?>
-                    </div>
-                </form>
-            </div>
-        <?php } else { ?>
-            <div class="d-flex align-items-center justify-content-center">
-                <div id="selectMessage" class="alert alert-info" role="alert" style="width: fit-content">
-                    <div id="deletionMessageTip">
-                        Selezionare la classe di esemplare da catalogare.
-                    </div>
+                </div>
+            </form>
+        </div>
+    <?php } else { ?>
+        <div class="d-flex align-items-center justify-content-center">
+            <div id="selectMessage" class="alert alert-info" role="alert" style="width: fit-content">
+                <div id="deletionMessageTip">
+                    Selezionare la classe di esemplare da catalogare.
                 </div>
             </div>
-        <?php }; ?>
+        </div>
+    <?php }; ?>
 
 
     </div>
