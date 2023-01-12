@@ -297,23 +297,23 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingSeven">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-                        q7 </button>
+                        Visualizzare l'esemplare più anziano di ogni specie in un parco </button>
                 </h2>
                 <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <div class="btn-group dropdown">
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                q7b </button>
+                                Selezionare il parco </button>
                             <ul class="dropdown-menu">
                                 <?php
                                 $connMySQL = new ConnectionMySQL();
                                 $pdo = $connMySQL->getConnection();
-                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeRegione FROM tregione");
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeParco FROM tparco");
                                 $foreignTableStmt->execute();
                                 $foreignTable = $foreignTableStmt->fetchAll();
 
-                                foreach ($foreignTable as $region) {
-                                    echo "<li><a class=\"dropdown-item\" onclick=\"q7(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                foreach ($foreignTable as $parco) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q7(" . $parco['id'] . ")\">" . $parco['nomeParco'] . "</a></li>";
                                 }
                                 ?>
                             </ul>
@@ -353,17 +353,6 @@
             $total += listaAnimali[1] / (listaAnimali[0] + listaAnimali[1]);
             }
             echo $total/count(listaAnimali)
-            */
-            /*
-            SELECT id, annoNascitaStimato, meseNascitaStimato, giornoNascitaStimato
-            FROM tanimale
-            ORDER BY tanimale.annoNascitaStimato ASC, tanimale.meseNascitaStimato ASC, tanimale.giornoNascitaStimato ASC
-            LIMIT 1;
-            SELECT id, annoNascitaStimato, meseNascitaStimato, giornoNascitaStimato
-            FROM tpianta
-            ORDER BY tanimale.annoNascitaStimato ASC, tanimale.meseNascitaStimato ASC, tanimale.giornoNascitaStimato ASC
-            LIMIT 1;
-            echo max(results)
             */
         </div>
     </div>
@@ -479,13 +468,43 @@
 
         })
     }
+
+    function q7(idParco) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q7.php",
+            data: {
+                parco: idParco
+            },
+            success: function(q7Response) {
+                if (q7Response != "") {
+                    console.log(q7Response);
+                    q7Response = JSON.parse(q7Response);
+                    console.log(q7Response);
+
+                    $("#showQ7").html("<table id=\"showQ7table\"></table>");
+                    if (q7Response.length > 0) {
+                        $("#showQ7table").html("<th>Specie</th><th>Codice esemplare</th><th>Anno</th><th>Mese</th><th>Giorno</th>");
+                        for (let h = 0; h < q7Response.length; h++) {
+                            $("#showQ7table").append("<tr><td>" + q7Response[h].specie + "</td><td>" + q7Response[h].codice + "</td><td>" + q7Response[h].y + "</td><td>" + q7Response[h].m + "</td><td>" + q7Response[h].d + "</td></tr>");
+                        };
+                    } else {
+                        $("#showQ7table").html("Non sono stati trovati esemplari nel parco selezionato");
+                    }
+
+                }
+
+            },
+
+        })
+    }
 </script>
 
 <?php
 
 function showTable($configInfo, $table)
 {
-    echo "<div class=\"d-flex align-items-center flex-column justify-content-start\" style=\"height: 50%;\">
+    echo "<div class=\"d-flex align-items-center flex-column justify-content-start\" style=\"height: 70%;\">
             <div id=\"tableWrapper\" class=\"container-md\">";
     $connMySQL = new ConnectionMySQL();
     $pdo = $connMySQL->getConnection();
