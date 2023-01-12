@@ -9,8 +9,7 @@
 </head>
 <?php
 require_once("../common/php/DBConnector.php");
-
-echo var_dump($_SESSION);
+//echo var_dump($_SESSION);
 ?>
 
 <body>
