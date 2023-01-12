@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
+                    <h2 class="accordion-header" id="headingFour">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                             Contare le nascite di una certa specie in un certo anno
                         </button>
@@ -200,36 +200,72 @@
                     </div>
                 </div>
             </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        Contare e visualizzare le specie diarbusti in una regione
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Seleziona la regione in cui cercare:
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeRegione FROM tregione");
+                                $foreignTableStmt->execute();
+                                $foreignTable = $foreignTableStmt->fetchAll();
 
-            SELECT count(id) AS bornCount FROM tanimale/pianta WHERE tanimale.idSpecieAnimale/Pianta = anno AND tanimale.annoNascitaStimato = anno
-            /*
-            SELECT
-            COUNT(
-            DISTINCT tpianta.idSpeciePianta
-            ) AS arbustiCount,
-            tparco.nomeParco AS parco
-            FROM
-            tpianta
-            INNER JOIN tspeciepianta ON tspeciepianta.id = tpianta.idSpeciePianta
-            INNER JOIN tgenere ON tgenere.id = tspeciepianta.idGenere
-            INNER JOIN tparco ON tparco.id = 1
-            WHERE
-            tpianta.idParco = 1 AND tgenere.idCategoria = 2;
-            */
-            /*
-            SELECT
-            COUNT(
-            DISTINCT tpianta.idSpeciePianta
-            ) AS piniCount,
-            tparco.nomeParco AS parco
-            FROM
-            tpianta
-            INNER JOIN tspeciepianta ON tspeciepianta.id = tpianta.idSpeciePianta
-            INNER JOIN tgenere ON tgenere.id = tspeciepianta.idGenere
-            INNER JOIN tparco ON tparco.id = 2
-            WHERE
-            tpianta.idParco = 2 AND tgenere.nomeGenere = 'Pino';
-            */
+                                foreach ($foreignTable as $region) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q4(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div id="showQ4">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        Contare e visualizzare le specie diarbusti in una regione
+                    </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Seleziona la regione in cui cercare:
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php
+                                $connMySQL = new ConnectionMySQL();
+                                $pdo = $connMySQL->getConnection();
+                                $foreignTableStmt = $pdo->prepare("SELECT id, nomeRegione FROM tregione");
+                                $foreignTableStmt->execute();
+                                $foreignTable = $foreignTableStmt->fetchAll();
+
+                                foreach ($foreignTable as $region) {
+                                    echo "<li><a class=\"dropdown-item\" onclick=\"q4(" . $region['id'] . ")\">" . $region['nomeRegione'] . "</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div id="showQ4">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             /*
             listaAnimali = array();
             SELECT
@@ -316,6 +352,34 @@
                         console.log(i);
                         $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
                     };
+                }
+
+            },
+
+        })
+    }
+
+    function q4(idRegione) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q4.php",
+            data: {
+                regione: idRegione
+            },
+            success: function(q4Response) {
+                if (q4Response != "") {
+                    console.log(q4Response);
+                    q4Response = JSON.parse(q4Response);
+                    console.log(q4Response);
+
+                    $("#showQ4").html("<b>Totale</b><br>" + q4Response.length + "<table id=\"showQ4table\"></table>");
+                    if (q4Response.length > 0) {
+                        $("#showQ4table").html("<th>Specie</th>");
+                        for (let j = 0; j < q4Response.length; j++) {
+                            $("#showQ4table").append("<tr><td>" + q4Response[j].specie + "</td></tr>");
+                        };
+                    }
+
                 }
 
             },
