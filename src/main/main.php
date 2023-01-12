@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFour">
+                    <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                             Contare le nascite di una certa specie in un certo anno
                         </button>
@@ -267,13 +267,13 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingSix">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                        q6 </button>
+                        Trovare che parte degli animali dei parchi di una regione sono cuccioli </button>
                 </h2>
                 <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <div class="btn-group dropdown">
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                q6b </button>
+                                Seleziona la regione in cui cercare: </button>
                             <ul class="dropdown-menu">
                                 <?php
                                 $connMySQL = new ConnectionMySQL();
@@ -324,36 +324,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-            /*
-            listaAnimali = array();
-            SELECT
-            tanimale.id AS esemplare,
-            tanimale.idSpecieAnimale AS specie,
-            tanimale.cucciolo AS cucciolo
-            FROM
-            tanimale
-            INNER JOIN tspecieanimale ON tspecieanimale.id = tanimale.idSpecieAnimale
-            INNER JOIN tparco ON tparco.id = tanimale.idParco
-            INNER JOIN tregione ON tparco.idRegione = tregione.id
-            WHERE
-            tregione.id = ?;
-            foreach(result){
-            if(!isset(listaAnimali[result['specie']])){
-            listaAnimali += ['result['specie']' => array(
-            '1' => 0,
-            '0' => 0
-            )]}
-            listaAnimali[result['specie']][result['cucciolo']] += 1;
-            }
-            $total = 0;
-            foreach(listaAnimali){
-            $total += listaAnimali[1] / (listaAnimali[0] + listaAnimali[1]);
-            }
-            echo $total/count(listaAnimali)
-            */
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -466,6 +436,27 @@
 
             },
 
+        })
+    }
+
+    function q6(idRegione) {
+        $.ajax({
+            type: 'GET',
+            url: "./php/q6.php",
+            data: {
+                regione: idRegione
+            },
+            success: function(q6Response) {
+                if (q6Response.includes("%")) {
+                    console.log(q6Response);
+
+                    $("#showQ6").html("Nella regione selezionata il <b>" + q6Response + "</b> degli esemplari di animali sono cuccioli");
+
+                } else {
+                    $("#showQ6").html(q6Response);
+                }
+
+            },
         })
     }
 
