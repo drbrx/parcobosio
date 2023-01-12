@@ -19,10 +19,6 @@ require_once("../common/php/DBConnector.php");
     </div>
 
     <div style="float: left; width: 90%; background-color: #272a2e; height: 100%;">
-
-        <?php
-
-        ?>
         <div id="form" class="d-flex align-items-center justify-content-center" style="height: 100%">
             <form action="php/send.php">
                 <div id="tableWrapper" class="container-md">
