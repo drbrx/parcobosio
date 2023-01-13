@@ -11,7 +11,7 @@
     function showForm() {}
 </script>
 
-<body>
+<body style="background-color: rgb(75, 75, 75); color:aliceblue">
     <?php //all non generic, do not re-use unless you like suffering
     require_once("../../common/php/DBConnector.php");
     //echo var_dump($_SESSION);
@@ -50,8 +50,8 @@
     //echo $minDiff;
     if ($minDiff < $MAXDIFF) {
         echo "<div id=\"buttons\">È già presente nel sistema la specie '$best'. Si vuole comunque creare la specie '$specie'?
-        <button onclick=\"showForm()\">Sì</button>
-        <button onclick=\"window.location.href = ' ../insert.php'\">No</button></div>";
+        <button type=\"button\" class=\"btn btn-warning btn-lg\" onclick=\"showForm()\">Sì</button>
+        <button type=\"button\" class=\"btn btn-primary btn-lg\" onclick=\"window.location.href = ' ../insert.php'\">No</button></div>";
         $hide = true;
     } else {
         $hide = false;
@@ -63,9 +63,9 @@
     {
 
     ?>
-        <form <?php if ($hide) {
-                    echo "style=\"visibility: hidden\"";
-                } ?> id="inputForm" action="sendSpecies.php" method="get">
+        <form style="width: 20%<?php if ($hide) {
+                                    echo "; visibility: hidden";
+                                } ?>" id="inputForm" action="sendSpecies.php" method="get">
 
             <b>Nome della specie: </b> <?php echo $specie; ?> <br>
 

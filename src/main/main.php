@@ -15,9 +15,9 @@
         <div class="sidebarButton"><a href="../insert/insert.php">Insert</a></div>
     </div>
 
-    <div style="float: left; width: 90%; background-color: #272a2e">
+    <div style="float: left; width: 90%; height: 100%; background-color: #272a2e">
 
-        <a class="btn btn-info" href="../../index.php" role="button">Cambia parco...</a>
+        <a class="btn btn-primary" href="../../index.php" role="button">Cambia parco...</a>
 
         <?php
         require_once("../common/php/DBConnector.php");

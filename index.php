@@ -6,7 +6,7 @@
 
 </head>
 
-<body>
+<body style="background-color: rgb(75, 75, 75); color:aliceblue">
     <?php
 
     require_once("./src/common/php/DBConnector.php");
@@ -18,20 +18,24 @@
     $foreignTable = $foreignTableStmt->fetchAll();
 
     ?>
-
-    <div class="btn-group dropdown">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Seleziona il parco in cui stai operando:
-        </button>
-        <ul class="dropdown-menu">
-            <?php
-            $tableIndex = 0;
-            foreach ($foreignTable as $park) {
-                echo "<li><a class=\"dropdown-item\" href=\"./src/main/main.php?park=" . $park['id'] . "\">" . $park[$configInfo['tparco' . 'MAINFIELD']] . "</a></li>";
-            }
-            ?>
-        </ul>
+    <div class="d-flex align-items-center justify-content-center" style="margin-top: 50px;">
+        <div id="selectMessage" class="alert alert-info" role="alert" style="width: fit-content">
+            <div class=" btn-group dropdown">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleziona il parco in cui stai operando:
+                </button>
+                <ul class="dropdown-menu">
+                    <?php
+                    $tableIndex = 0;
+                    foreach ($foreignTable as $park) {
+                        echo "<li><a class=\"dropdown-item\" href=\"./src/main/main.php?park=" . $park['id'] . "\">" . $park[$configInfo['tparco' . 'MAINFIELD']] . "</a></li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 </body>
