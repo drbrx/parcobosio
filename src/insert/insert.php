@@ -130,7 +130,7 @@ require_once("../common/php/DBConnector.php");
                                                 $foreignTable = getForeignValues(strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])), $configInfo);
 
                                                 echo "
-                                                <input id=\"" . $currentRecord["COLUMN_NAME"] . "Input\" type=\"text\" class=\"form-control\" list=\"" . $currentRecord["COLUMN_NAME"] . "\"/>
+                                                <input name=\"" . $currentRecord["COLUMN_NAME"] . "\" id=\"" . $currentRecord["COLUMN_NAME"] . "Input\" type=\"text\" class=\"form-control\" list=\"" . $currentRecord["COLUMN_NAME"] . "\"/>
                                                 <datalist id=\"" . $currentRecord["COLUMN_NAME"] . "\">";
                                                 foreach ($foreignTable as $foreignRow) {
                                                     echo "<option data-value=\"" . $foreignRow['id'] . "\" " . ($currentRecord["IS_NULLABLE"] != "NO" ? "" : "required") . ">" . $foreignRow[$configInfo['t' . strtolower(str_replace("id", '', $currentRecord["COLUMN_NAME"])) . 'MAINFIELD']] .  "</option>";
@@ -182,7 +182,7 @@ require_once("../common/php/DBConnector.php");
             options = document.querySelectorAll('#' + list + ' option'),
             hiddenInput = document.getElementById(input.getAttribute('id') + '-hidden'),
             inputValue = input.value;
-        console.log(input);
+        //console.log(input);
 
         hiddenInput.value = inputValue;
 

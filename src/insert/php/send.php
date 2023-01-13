@@ -19,8 +19,11 @@ if (isset($_REQUEST)) {
     $fieldList = "";
     foreach ($stmtResponseRows as $currentRecordRows) {
         if ($currentRecordRows["TABLE_SCHEMA"] == $_SESSION['db_name']) {
-            if (($currentRecordRows["COLUMN_NAME"] == "idSpecieAnimale" || $currentRecordRows["COLUMN_NAME"] == "idSpeciePianta") && !is_int($_REQUEST[$currentRecordRows["COLUMN_NAME"]])) {/*proj specific, NON GENERIC, do not reuse*/
+            if (($currentRecordRows["COLUMN_NAME"] == "idSpecieAnimale" || $currentRecordRows["COLUMN_NAME"] == "idSpeciePianta") && !is_numeric($_REQUEST[$currentRecordRows["COLUMN_NAME"]])) {/*proj specific, NON GENERIC, do not reuse*/
                 header("location: ./specifyData.php?" . http_build_query($_REQUEST));
+                echo $_REQUEST[$currentRecordRows["COLUMN_NAME"]];
+                echo !is_numeric($_REQUEST[$currentRecordRows["COLUMN_NAME"]]);
+                die;
             }
             if ($currentRecordRows["EXTRA"] != "auto_increment") {
                 if ($fieldList != "") {

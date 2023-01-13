@@ -79,7 +79,7 @@
                             $animalStmt->execute();
                             $animals = $animalStmt->fetchAll();
 
-                            $found = false;
+                            $found1 = false;
                             foreach ($animals as $species) {
 
                                 $connMySQL = new ConnectionMySQL();
@@ -96,9 +96,9 @@
                                     $illAnimals = $illStmt->fetchAll()[0]['totCount'];
 
                                     if ($illAnimals / $allAnimals >= 0.75) {
-                                        if (!$found) {
+                                        if (!$found1) {
                                             echo "<b>Animali:</b><br>";
-                                            $found = true;
+                                            $found1 = true;
                                         }
                                         echo  $species['nomeSpecieAnimale'] . ": " . $illAnimals . "/" . $allAnimals . " (" . round($illAnimals / $allAnimals * 100, 0) . "% degli esemplari NON sono in buona salute)<br>";
                                     }
@@ -111,7 +111,7 @@
                             $plantStmt->execute();
                             $plants = $plantStmt->fetchAll();
 
-                            $found = false;
+                            $found2 = false;
                             foreach ($plants as $species) {
 
                                 $connMySQL = new ConnectionMySQL();
@@ -128,13 +128,17 @@
                                     $illPlants = $illStmt->fetchAll()[0]['totCount'];
 
                                     if ($illPlants / $allPlants >= 0.75) {
-                                        if (!$found) {
+                                        if (!$found2) {
                                             echo "<b>Piante:</b><br>";
-                                            $found = true;
+                                            $found2 = true;
                                         }
                                         echo  $species['nomeSpeciePianta'] . ": " . $illPlants . "/" . $allPlants . " (" . round($illPlants / $allPlants * 100, 0) . "% degli esemplari NON sono in buona salute)<br>";
                                     }
                                 }
+                            }
+
+                            if (!$found1 && !$found2) {
+                                echo "Non sono state trovate specie in via d'estinzione";
                             }
 
                             ?>
@@ -340,12 +344,17 @@
                 if (queryResponse != "") {
                     queryResponse = JSON.parse(queryResponse);
                     console.log(queryResponse);
-                    $("#showQ1table").html("<th>codice</th><th>parco</th>");
+                    if (queryResponse.length > 0) {
+                        $("#showQ1table").html("<th>codice</th><th>parco</th>");
 
-                    for (let i = 0; i < queryResponse.length; i++) {
-                        console.log(i);
-                        $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
-                    };
+                        for (let i = 0; i < queryResponse.length; i++) {
+                            console.log(i);
+                            $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
+                        };
+                    } else {
+                        $("#showQ1table").html("Non sono stati trovati esemplari");
+                    }
+
                 }
 
             },
@@ -403,9 +412,11 @@
                             }
                         };
                     } else {
-                        $("#showQ5table").html("Non sono stati trovati pini nella regione selezionata");
+                        $("#showQ5").html("Non sono stati trovati pini nella regione selezionata");
                     }
 
+                } else {
+                    $("#showQ5").html("Non sono stati trovati pini nella regione selezionata");
                 }
 
             },

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2023 at 08:18 PM
+-- Generation Time: Jan 13, 2023 at 01:41 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -39,70 +39,6 @@ CREATE TABLE `tanimale` (
   `cucciolo` tinyint(1) NOT NULL,
   `codice` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tanimale`
---
-
-INSERT INTO `tanimale` (`id`, `idSpecieAnimale`, `idParco`, `sesso`, `statoSalute`, `giornoNascitaStimato`, `meseNascitaStimato`, `annoNascitaStimato`, `cucciolo`, `codice`) VALUES
-(2, 1, 2, 'f', 0, 1, 1, 1000, 0, '2'),
-(3, 2, 3, 'm', 0, 5, 5, 4567, 0, 'kjh'),
-(4, 3, 1, 'f', 0, 1, 1, 0, 0, 'cod'),
-(5, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(6, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(7, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(8, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(9, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(10, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(11, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(12, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(13, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(14, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(15, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(16, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(17, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(18, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(19, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(20, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(21, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(22, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(23, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(24, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(25, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(26, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(27, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(28, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(29, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(30, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(31, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(32, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(33, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(34, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(35, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(36, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(37, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(38, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(39, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(40, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(41, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(42, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(43, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(44, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(45, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(46, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(47, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(48, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(49, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(50, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(51, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(52, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(53, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(54, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(55, 2, 3, 'f', 1, 4, 8, 2020, 0, '10011001'),
-(57, 1, 1, 'f', 0, 1, 1, 0, 0, 'ca'),
-(58, 1, 1, 'm', 0, 1, 1, 0, 0, 'cc'),
-(59, 2, 0, 'f', 0, 1, 1, 0, 0, 'ccc'),
-(60, 2, 4, 'm', 0, 5, 5, 1000, 0, 'code');
 
 -- --------------------------------------------------------
 
@@ -211,61 +147,6 @@ CREATE TABLE `tpianta` (
   `annoNascitaStimato` int(11) DEFAULT NULL,
   `codice` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tpianta`
---
-
-INSERT INTO `tpianta` (`id`, `idSpeciePianta`, `idParco`, `statoSalute`, `giornoNascitaStimato`, `meseNascitaStimato`, `annoNascitaStimato`, `codice`) VALUES
-(1, 0, -2, 0, 1, 1, 2000, 'codex12121'),
-(2, 2, 1, 0, NULL, NULL, NULL, '2112'),
-(3, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(4, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(5, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(6, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(7, 5, 2, 0, NULL, NULL, NULL, '2112'),
-(8, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(9, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(10, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(11, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(12, 6, 2, 0, NULL, NULL, NULL, '2112'),
-(13, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(14, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(15, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(16, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(17, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(18, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(19, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(20, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(21, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(22, 5, 2, 0, NULL, NULL, NULL, '2112'),
-(23, 1, 2, 1, NULL, NULL, NULL, '2112'),
-(24, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(25, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(26, 1, 1, 0, NULL, NULL, NULL, '2112'),
-(27, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(28, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(29, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(30, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(31, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(32, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(33, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(34, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(35, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(36, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(37, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(38, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(39, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(40, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(41, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(42, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(43, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(44, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(45, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(46, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(47, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(48, 1, 2, 0, NULL, NULL, NULL, '2112'),
-(49, 2, 4, 0, 11, 9, 4567, 'cod');
 
 -- --------------------------------------------------------
 
@@ -416,7 +297,7 @@ ALTER TABLE `tspeciepianta`
 -- AUTO_INCREMENT for table `tanimale`
 --
 ALTER TABLE `tanimale`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tcategoria`
@@ -446,7 +327,7 @@ ALTER TABLE `tparco`
 -- AUTO_INCREMENT for table `tpianta`
 --
 ALTER TABLE `tpianta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tregione`
@@ -458,13 +339,13 @@ ALTER TABLE `tregione`
 -- AUTO_INCREMENT for table `tspecieanimale`
 --
 ALTER TABLE `tspecieanimale`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tspeciepianta`
 --
 ALTER TABLE `tspeciepianta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
