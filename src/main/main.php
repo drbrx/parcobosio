@@ -333,7 +333,7 @@
         });
     });
 
-    function q1(idSpecie) {
+    function q1(idSpecie, table) {
         $.ajax({
             type: 'GET',
             url: "./php/q1.php",
@@ -349,7 +349,7 @@
 
                         for (let i = 0; i < queryResponse.length; i++) {
                             console.log(i);
-                            $("#showQ1table").append("<tr><td>" + queryResponse[i].id + "</td><td>" + queryResponse[i].parco + "</td></tr>");
+                            $("#showQ1table").append("<tr><td>" + queryResponse[i].codice + "</td><td>" + queryResponse[i].parco + "</td><td><a class=\"btn btn-primary\" href=\"../details/details.php?table=tanimale&id=" + queryResponse[i].id + "\" role=\"button\">Details</a></td></tr>");
                         };
                     } else {
                         $("#showQ1table").html("Non sono stati trovati esemplari");
